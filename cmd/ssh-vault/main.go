@@ -123,6 +123,9 @@ func main() {
 	if *f {
 		fmt.Printf("%s\n", vault.Fingerprint)
 		pub, err := vault.GetRSAPublicKey(PKCS8)
+		if err != nil {
+			exit1(err)
+		}
 		fmt.Printf("%s\n", pub)
 		os.Exit(0)
 	}
