@@ -1,11 +1,20 @@
-.PHONY: all get test clean build cover compile goxc bintray
+.PHONY: all bintray build clean compile cover get goxc install test
 
 GO ?= go
-BIN_NAME=ssh-vault
+GOEXE ?=$(shell ${GO} env GOEXE)
+GOPATH ?=$(shell ${GO} env GOPATH)
+GOBIN ?=${GOPATH}/bin
+
+NAME=ssh-vault
+BIN_NAME = ${NAME}${GOEXE}
+VERSION=$(shell git describe --tags --always)
+
 GO_XC = ${GOPATH}/bin/goxc -os="freebsd netbsd openbsd darwin linux windows" -bc="!386"
 GOXC_FILE = .goxc.json
 GOXC_FILE_LOCAL = .goxc.local.json
-VERSION=$(shell git describe --tags --always)
+
+CP=cp
+RM=rm
 
 all: clean build
 
@@ -20,10 +29,13 @@ get:
 	${GO} get -u golang.org/x/crypto/ssh/terminal
 
 build: get
-	${GO} build -ldflags "-s -w -X main.version=${VERSION}" -o ${BIN_NAME} cmd/ssh-vault/main.go;
+	${GO} build -ldflags "-s -w -X main.version=${VERSION}" -o ${BIN_NAME} ./cmd/ssh-vault/main.go
+
+install: build
+	${CP} ${BIN_NAME} ${GOBIN}/${BIN_NAME}"
 
 clean:
-	@rm -rf ssh-vault-* ${BIN_NAME} ${BIN_NAME}.debug *.out build debian
+	@${RM} -rf ssh-vault-* ${BIN_NAME} ${BIN_NAME}.debug *.out build debian
 
 test: get
 	${GO} test -race -v
@@ -36,24 +48,24 @@ cover:
 compile: clean goxc
 
 goxc:
-	$(shell echo '{\n  "ConfigVersion": "0.9",' > $(GOXC_FILE))
-	$(shell echo '  "AppName": "ssh-vault",' >> $(GOXC_FILE))
-	$(shell echo '  "ArtifactsDest": "build",' >> $(GOXC_FILE))
-	$(shell echo '  "PackageVersion": "${VERSION}",' >> $(GOXC_FILE))
-	$(shell echo '  "TaskSettings": {' >> $(GOXC_FILE))
-	$(shell echo '    "bintray": {' >> $(GOXC_FILE))
-	$(shell echo '      "downloadspage": "bintray.md",' >> $(GOXC_FILE))
-	$(shell echo '      "package": "ssh-vault",' >> $(GOXC_FILE))
-	$(shell echo '      "repository": "ssh-vault",' >> $(GOXC_FILE))
-	$(shell echo '      "subject": "nbari"' >> $(GOXC_FILE))
-	$(shell echo '    }\n  },' >> $(GOXC_FILE))
-	$(shell echo '  "BuildSettings": {' >> $(GOXC_FILE))
-	$(shell echo '    "LdFlags": "-s -w -X main.version=${VERSION}"' >> $(GOXC_FILE))
-	$(shell echo '  }\n}' >> $(GOXC_FILE))
-	$(shell echo '{\n "ConfigVersion": "0.9",' > $(GOXC_FILE_LOCAL))
-	$(shell echo ' "TaskSettings": {' >> $(GOXC_FILE_LOCAL))
-	$(shell echo '  "bintray": {\n   "apikey": "$(BINTRAY_APIKEY)"' >> $(GOXC_FILE_LOCAL))
-	$(shell echo '  }\n } \n}' >> $(GOXC_FILE_LOCAL))
+	$(shell printf '{\n  "ConfigVersion": "0.9",' > $(GOXC_FILE))
+	$(shell printf '  "AppName": "ssh-vault",' >> $(GOXC_FILE))
+	$(shell printf '  "ArtifactsDest": "build",' >> $(GOXC_FILE))
+	$(shell printf '  "PackageVersion": "${VERSION}",' >> $(GOXC_FILE))
+	$(shell printf '  "TaskSettings": {' >> $(GOXC_FILE))
+	$(shell printf '    "bintray": {' >> $(GOXC_FILE))
+	$(shell printf '      "downloadspage": "bintray.md",' >> $(GOXC_FILE))
+	$(shell printf '      "package": "ssh-vault",' >> $(GOXC_FILE))
+	$(shell printf '      "repository": "ssh-vault",' >> $(GOXC_FILE))
+	$(shell printf '      "subject": "nbari"' >> $(GOXC_FILE))
+	$(shell printf '    }\n  },' >> $(GOXC_FILE))
+	$(shell printf '  "BuildSettings": {' >> $(GOXC_FILE))
+	$(shell printf '    "LdFlags": "-s -w -X main.version=${VERSION}"' >> $(GOXC_FILE))
+	$(shell printf '  }\n}' >> $(GOXC_FILE))
+	$(shell printf '{\n "ConfigVersion": "0.9",' > $(GOXC_FILE_LOCAL))
+	$(shell printf ' "TaskSettings": {' >> $(GOXC_FILE_LOCAL))
+	$(shell printf '  "bintray": {\n   "apikey": "$(BINTRAY_APIKEY)"' >> $(GOXC_FILE_LOCAL))
+	$(shell printf '  }\n } \n}' >> $(GOXC_FILE_LOCAL))
 	${GO_XC}
 
 bintray:
