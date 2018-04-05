@@ -1,0 +1,19 @@
+## fix fingerprint
+
+<a/>ref: https://superuser.com/a/714195/15803[`@`](http://archive.is/pVFST)
+
+Fingerprint shown by `ssh-vault` doesn't match the normal MD5 fingerprints shown on GitHub.
+
+* calculating the MD5 FP ...
+
+```
+set PUB_KEY=AAAAB3NzaC1yc2EAAAADAQABAAABAQDEbKq5U57fhzQ3SBbs3NVmgY2ouYZfPhc6cXBNEFpRT3T100fnbkYw+EHi76nwsp+uGxk08kh4GG881DrgotptrJj2dJxXpWp/SFdVu5S9fFU6l6dCTC9IBYYCCV8PvXbBZ3oDZyyyJT7/vXSaUdbk3x9MeNlYrgItm2KY6MdHYEg8R994Sspn1sE4Ydey5DfG/WNWVrzFCI0sWI3yj4zuCcUXFz9sEG8fIYikD9rNuohiMenWjkj6oLTwZGVW2q4wRL0051XBkmfnPD/H6gqOML9MbZQ8D6/+az0yF9oD61SkifhBNBRRNaIab/Np7XD61siR8zNMG/vCKjFGICnp
+printf "%s" "%PUB_KEY%" | base64 -d | md5
+```
+==>
+```
+6530389635564f6464e8e3a47d593e19 -
+```
+
+set PUB_KEY=AAAAB3NzaC1yc2EAAAADAQABAAACAQCYe16H6c2hpPkQvNh2KDQ9OocxD8NERYMWi3P/tNjNiFu+zoMJRSRPPzi2rMcaXJWLbCavOYI0u2y6yvQzAI4gNnW0Lls3png/7wXO9b6rfH+5AERW0jC2NIEnFvLMilnAagtqwbwi9p8GQ3nT1xakDT9SXxJMvWHdwi2OKaDl49lCClnwVo2xXFG3xpnt2xzutdjvXxgceLzYrdqfWzuaLG5lXONYkLFV12M2gAiUWZv2JR7iNCFqXITpLt/gL+bluZFlAW8WFCk/73fPnQKSEZT7a66T7QFL+VxxiVYV/F3MPfp2Cny5R+quNHItnAZsawm+KgRCrPv9bUh1d8w0eRQP18/sqWiIR83pYAb9rDxtnO8TkC3nFFIgvjjERQ4LiS5WCqG92qcEE0j9jRkoruPfbTMiHEdN49QdMU1hhk+QPQpF8TKF7C1s4/SmHjHRdIRtACLNao7tJzV8IIUgBOAfiyN81rfpS+xwB0T5lO1rA2Xocs4yQwL1fTyam/VYL9aMHIH95i5deAMLTIakcP1+gLqWLRZWnZSMWVXKuF/0/VBOeqdBq6r4fPs54DzpNiFBpHkYNDKPNg3RKblGGFMqheMKLPnJ+O8frE5mFEajyTfRXR/YVRgpvCtBMT9MwpsaSpzSWpu+Tl0WCUv3IGRwKD/UIi1LibgiR8PuiQ==
+printf "%s" "%PUB_KEY%" | base64 -d | md5
