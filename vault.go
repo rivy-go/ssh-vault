@@ -96,6 +96,17 @@ func (v *vault) GenFingerprint(p *pem.Block) (string, error) {
 		-1), nil
 }
 
+// Fingerprint return fingerprint of public portion of ssh-key
+func (v *vault) GenPublicFingerprint(p *rsa.PublicKey) (string, error) {
+	fingerPrint := md5.New()
+	fingerPrint.Write(p.Bytes)
+	return strings.Replace(fmt.Sprintf("% x",
+		fingerPrint.Sum(nil)),
+		" ",
+		":",
+		-1), nil
+}
+
 // GetRSAPublicKey return rsa.PublicKey
 func (v *vault) GetRSAPublicKey(p *pem.Block) (*rsa.PublicKey, error) {
 	pubkeyInterface, err := x509.ParsePKIXPublicKey(p.Bytes)
